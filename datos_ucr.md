@@ -102,7 +102,7 @@ ggplot(df) +
   annotate('text', x = 13000, y = 1, label = paste(n_administrativos,'administrativos'), size = 5)
 ```
 
-![](datos_ucr_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+![](README_figs/README-unnamed-chunk-2-1.png)<!-- -->
 
 Esto significa que por cada estudiante, hay 0.12 docentes en la universidad.
 

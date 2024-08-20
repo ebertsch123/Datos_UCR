@@ -26,7 +26,9 @@ En este documento vamos a explorar las bases de datos de la U para ver varias co
 Para ello, vamos a usar las bases de datos de la UCR (disponibles en transparencia.ucr.ac.cr) y haremos un análisis **100% basado en datos**.
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  fig.path = "README_figs/README-"
+)
 ```
 
 ## **1. Estudiantes vs Funcionarixs**
