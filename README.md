@@ -6,7 +6,9 @@ output:
   html_document:
     keep_md: true
 ---
+
 # **¿Cómo se usa el FEES en la UCR?**
+
 ---
 
 La lucha por el FEES ha creado una serie de narrativas para poner en duda los méritos de las Universidades Públicas. Los principales argumentos consisten en:
@@ -33,11 +35,6 @@ Para ello, vamos a usar las bases de datos de la UCR (disponibles en transparenc
 Vamos a cargar las bases de datos de estudiantes matriculadxs y la planilla de la UCR.
 
 
-```r
-rm(list = ls())
-library(tidyverse)
-```
-
 ```
 ## Warning: package 'ggplot2' was built under R version 4.3.1
 ```
@@ -53,33 +50,6 @@ library(tidyverse)
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-```
-
-```r
-#cargar tablas de estudiantes matriculados
-estudiantes <- read.csv("https://transparencia.ucr.ac.cr/medios/documentos/2020/estudiantes-fi%CC%81sicos-matri%CC%81culados.csv",fileEncoding='latin1',check.names=F, sep = ';')
-estudiantes <- replace(estudiantes, is.na(estudiantes),0)
-
-n_estudiantes <- sum(estudiantes$`2019/I Ciclo/Estudiantes físicos`) #¿cuántos estudiantes matricularon en el primer semestre del 2019?
-
-
-
-
-#cargar tabla de planilla de la UCR en abril 2024
-funcionarios <- read.csv("https://transparencia.ucr.ac.cr/medios/documentos/2024/planilla-2024-04.csv",fileEncoding='latin1',check.names=F, sep = ';')
-
-
-
-funcionarios$puesto <- ifelse(grepl('PROFESOR',funcionarios$`ï»¿PUESTO`) == TRUE,
-                              'Docente',
-                              'Administrativo')
-
-
-docentes <- funcionarios %>% filter(puesto == 'Docente')
-n_docentes <- nrow(docentes)
-
-administrativos <- funcionarios %>% filter(puesto == 'Administrativo')
-n_administrativos <- nrow(administrativos)
 ```
 
 

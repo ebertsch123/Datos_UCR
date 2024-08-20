@@ -358,6 +358,8 @@ Bertsch Aguilar</h4>
 </div>
 
 
+<div id="cómo-se-usa-el-fees-en-la-ucr" class="section level1">
+<h1><strong>¿Cómo se usa el FEES en la UCR?</strong></h1>
 <hr />
 <p>La lucha por el FEES ha creado una serie de narrativas para poner en
 duda los méritos de las Universidades Públicas. Los principales
@@ -384,8 +386,6 @@ datos</strong>.</p>
 <h2><strong>1. Estudiantes vs Funcionarixs</strong></h2>
 <p>Vamos a cargar las bases de datos de estudiantes matriculadxs y la
 planilla de la UCR.</p>
-<pre class="r"><code>rm(list = ls())
-library(tidyverse)</code></pre>
 <pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.3.1</code></pre>
 <pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
@@ -397,30 +397,6 @@ library(tidyverse)</code></pre>
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>#cargar tablas de estudiantes matriculados
-estudiantes &lt;- read.csv(&quot;https://transparencia.ucr.ac.cr/medios/documentos/2020/estudiantes-fi%CC%81sicos-matri%CC%81culados.csv&quot;,fileEncoding=&#39;latin1&#39;,check.names=F, sep = &#39;;&#39;)
-estudiantes &lt;- replace(estudiantes, is.na(estudiantes),0)
-
-n_estudiantes &lt;- sum(estudiantes$`2019/I Ciclo/Estudiantes físicos`) #¿cuántos estudiantes matricularon en el primer semestre del 2019?
-
-
-
-
-#cargar tabla de planilla de la UCR en abril 2024
-funcionarios &lt;- read.csv(&quot;https://transparencia.ucr.ac.cr/medios/documentos/2024/planilla-2024-04.csv&quot;,fileEncoding=&#39;latin1&#39;,check.names=F, sep = &#39;;&#39;)
-
-
-
-funcionarios$puesto &lt;- ifelse(grepl(&#39;PROFESOR&#39;,funcionarios$`ï»¿PUESTO`) == TRUE,
-                              &#39;Docente&#39;,
-                              &#39;Administrativo&#39;)
-
-
-docentes &lt;- funcionarios %&gt;% filter(puesto == &#39;Docente&#39;)
-n_docentes &lt;- nrow(docentes)
-
-administrativos &lt;- funcionarios %&gt;% filter(puesto == &#39;Administrativo&#39;)
-n_administrativos &lt;- nrow(administrativos)</code></pre>
 <pre class="r"><code>df &lt;- data.frame(&#39;Nombre&#39; = c(&#39;Estudiantes&#39;, &#39;Docentes&#39;, &#39;Administrativos&#39;),
                  &#39;n&#39; = c(n_estudiantes, n_docentes, n_administrativos))
 
@@ -443,6 +419,7 @@ universidad.</p>
 <p>Similarmente, por cada estudiante, hay 0.09 administrativos en la
 universidad.</p>
 <hr />
+</div>
 </div>
 
 
