@@ -6,6 +6,7 @@ output:
   html_document:
     keep_md: true
 ---
+# **¿Cómo se usa el FEES en la UCR?**
 ---
 
 La lucha por el FEES ha creado una serie de narrativas para poner en duda los méritos de las Universidades Públicas. Los principales argumentos consisten en:
