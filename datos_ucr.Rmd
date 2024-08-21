@@ -41,7 +41,7 @@ knitr::opts_chunk$set(
 
 Vamos a cargar las bases de datos de estudiantes matriculadxs y la planilla de la UCR.
 
-```{r}
+```{r, error=FALSE,warning=FALSE,message=FALSE}
 rm(list = ls())
 library(tidyverse)
 
@@ -121,7 +121,8 @@ moda <- round(get_mode(funcionarios$SALARIO),0)
 ggplot(funcionarios) + 
   geom_histogram(aes(x = SALARIO), color = 'black', fill = 'cyan4', bins = 40) + 
   geom_vline(xintercept = promedio, linewidth = 1) + 
-  geom_vline(xintercept = moda, linewidth = 1) +
+  geom_vline(xintercept = moda, linewidth = 1) + 
+  geom_vline(xintercept = 501730, linewidth = 1.2, color = 'blue4') +
   labs(x = 'Salarios', y = 'Cantidad') + 
   theme(panel.background = element_blank(),
         panel.border = element_rect(fill = NA, color = 'black'),
@@ -132,10 +133,13 @@ ggplot(funcionarios) +
 
 print(paste0("El salario promedio en la UCR es ₡",promedio))
 print(paste0("El salario más común en la UCR es ₡",moda ))
+print(paste0("Como referencia, el salario mínimo de un profesor asistente en la U de Chile es de ~ ₡501730."))
 ```
 
 
 Con ello, podemos ver una realidad más objetiva con los salarios asignados en la U. ¿Por qué el salario más común es tan bajo? Una gran parte de funcionarios de la UCR (approx. 1000) no están nombrados a tiempo completo. Veamos con más detalle cómo se distribuyen esas pagas dependiendo del puesto.
+
+Asimismo, se observa que el salario mínimo que se brinda en la UCR es significativamente más bajo comparada a universidades de la Región. Por ejemplo, la U de Chile posee un salario de entrada para profesores asistentes de ~ ₡501730 (https://recreoexplora.cl/cuanto-gana-un-profesor-universitario-en-chile/#:~:text=En%20t%C3%A9rminos%20generales%2C%20un%20profesor,%242%2C000%2C000%20y%20%243%2C000%2C000%20CLP%20mensuales.).
 
 
 ```{r}
@@ -156,27 +160,81 @@ for(i in 1:nrow(funcionarios)){
 }
 
 
-cantidad <- table(funcionarios$puesto)
+funcionarios$salarios2 <- NA
+
+for(i in 1:nrow(funcionarios)){
+  if(funcionarios$SALARIO[i] < 1e6){
+    funcionarios$salarios2[i] <- '< 1 millón'
+  } else if(funcionarios$SALARIO[i] >= 1e6 & funcionarios$SALARIO[i] < 2e6) {
+    funcionarios$salarios2[i] <- 'entre 1 y 2 millones'
+  } else if(funcionarios$SALARIO[i] >= 2e6 & funcionarios$SALARIO[i] < 3e6) {
+    funcionarios$salarios2[i] <- 'entre 2 y 3 millones'
+  } else if(funcionarios$SALARIO[i] >= 3e6 & funcionarios$SALARIO[i] < 4e6) {
+    funcionarios$salarios2[i] <- 'entre 3 y 4 millones'
+  } else if(funcionarios$SALARIO[i] >= 4e6) {
+    funcionarios$salarios2[i] <- '> 4 millones'
+  }
+}
+
+
+funcionarios$salarios2 <- factor(funcionarios$salarios2, levels = c('< 1 millón','entre 1 y 2 millones','entre 2 y 3 millones','entre 3 y 4 millones','> 4 millones'))
+
+n_salarios <- table(funcionarios$salarios2)
 
 
 ggplot(funcionarios) + 
-  geom_violin(aes(x = SALARIO, y = puesto, fill = puesto)) + 
-  geom_boxplot(aes(x = SALARIO, y = puesto, fill = puesto), shape = 19, width = 0.1, linewidth = 0.7, color = 'black') + 
-    geom_violin(aes(x = SALARIO, y = puesto), fill = NA) + 
+  geom_bar(aes(y = salarios2, fill = puesto), color = 'black') + 
   theme(panel.background = element_blank(),
         panel.border = element_rect(fill = NA, color = 'black'),
         text = element_text(size = 14),
-        legend.position = 'none') + 
-  labs(y = 'Puesto', x = 'Salario') + 
-  scale_fill_manual(values = c('#D55E00', '#0072B2', '#F0E442', '#009E73', '#CC79A7', '#56B4E9')) + 
-  annotate('text', x = 7.9e6, y = 1, label = cantidad[[1]], size = 4) + 
-  annotate('text', x = 3.6e6, y = 2, label = cantidad[[2]], size = 4) +
-  annotate('text', x = 4.4e6, y = 3, label = cantidad[[3]], size = 4) +
-  annotate('text', x = 9e6, y = 4, label = cantidad[[4]], size = 4) +
-  annotate('text', x = 3.3e6, y = 5, label = cantidad[[5]], size = 4) +
-  annotate('text', x = 6.5e6, y = 6, label = cantidad[[6]], size = 4)
+        legend.position = 'bottom') + 
+  labs(y = '', x = 'Cantidad') +
+  scale_fill_manual('Puesto', values = c('#D55E00', '#0072B2', '#F0E442', '#009E73', '#CC79A7', '#56B4E9')) + 
+  annotate('text', x = 4900, y = 1, label = n_salarios[[1]], size = 4) + 
+  annotate('text', x = 3200, y = 2, label = n_salarios[[2]], size = 4) + 
+  annotate('text', x = 1350, y = 3, label = n_salarios[[3]], size = 4) + 
+  annotate('text', x = 600, y = 4, label = n_salarios[[4]], size = 4) + 
+  annotate('text', x = 400, y = 5, label = n_salarios[[5]], size = 4)
+
 
 
 ```
 
+## 3. ¿Cuánto del FEES es realmente esto?
+
+En 2024, la UCR recibió ₡291317.11 millones de su corte del FEES (https://semanariouniversidad.com/universitarias/asi-quedo-distribuido-el-fees-de-2024/). Con esta información, vamos a hacer varios experimentos:
+
+- ¿Cuánto % del corte de la UCR consisten estos salarios anuales?
+- Vamos a despedir a todas las personas que ganen 4 millones o más. ¿Cuánto cambia ese porcentaje?
+- Vamos a hacer un tope salarial de ₡2 millones. ¿Cuánto cambia ese porcentaje?
+- Vamos a hacer un tope salarial de ₡1 millón. ¿Cuánto cambia ese porcentaje?
+
+
+```{r}
+FEES <- 291317.11*1e6 #corte del FEES para la UCR
+
+funcionarios$despedidos <- ifelse(funcionarios$SALARIO > 4e6, 0, funcionarios$SALARIO)
+funcionarios$corte2M <- ifelse(funcionarios$SALARIO > 2e6, 2e6, funcionarios$SALARIO)
+funcionarios$corte1M <- ifelse(funcionarios$SALARIO > 1e6, 1e6, funcionarios$SALARIO)
+
+porcentaje <- c()
+
+for(i in c(2,9:11)){
+  porcentaje <- c(porcentaje, 100*(sum(funcionarios[,i])*12)/FEES)
+}
+
+pcts <- data.frame('Pruebas' = relevel(as.factor(c('Planilla normal', 'Despidiendo salarios >4 millones', 'Tope 2 millones', 'Tope 1 millón')),'Planilla normal'),
+                   'Porcentajes' = porcentaje)
+
+
+ggplot(pcts) + 
+  geom_col(aes(x = Porcentajes, y = Pruebas, fill = Porcentajes), color = 'black') + 
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(fill = NA, color = 'black'),
+        text = element_text(size = 14),
+        legend.position = 'none') + 
+  labs(y = '', x = 'Porcentaje (%)') + 
+  scale_fill_gradient(low = '#0072B2', high = '#F0E442', limits = c(40,55))
+
+```
 
