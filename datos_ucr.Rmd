@@ -50,17 +50,17 @@ library(tidyverse)
 estudiantes <- read.csv("https://transparencia.ucr.ac.cr/medios/documentos/2020/estudiantes-fi%CC%81sicos-matri%CC%81culados.csv",fileEncoding='latin1',check.names=F, sep = ';')
 estudiantes <- replace(estudiantes, is.na(estudiantes),0)
 
-n_estudiantes <- sum(estudiantes$`2019/I Ciclo/Estudiantes físicos`) #¿cuántos estudiantes matricularon en el primer semestre del 2019?
+n_estudiantes <- sum(estudiantes$`2020/I Ciclo/Estudiantes físicos`) #¿cuántos estudiantes matricularon en el primer semestre del 2020?
 
 
 
 
 #cargar tabla de planilla de la UCR en abril 2024
-funcionarios <- read.csv("https://transparencia.ucr.ac.cr/medios/documentos/2024/planilla-2024-04.csv", sep = ';')
+funcionarios <- read.csv("https://transparencia.ucr.ac.cr/medios/documentos/2024/planilla-2024-05.csv", sep = ';')
 
 
 
-funcionarios$puesto <- ifelse(grepl('PROFESOR',funcionarios$ï..PUESTO) == TRUE,
+funcionarios$puesto <- ifelse(grepl('PROFESOR',funcionarios$PUESTO) == TRUE,
                               'Docente',
                               'Administrativo')
 
@@ -71,10 +71,8 @@ n_docentes <- nrow(docentes)
 administrativos <- funcionarios %>% filter(puesto == 'Administrativo')
 n_administrativos <- nrow(administrativos)
 
-```
 
 
-```{r}
 df <- data.frame('Nombre' = c('Estudiantes', 'Docentes', 'Administrativos'),
                  'n' = c(n_estudiantes, n_docentes, n_administrativos))
 
@@ -94,14 +92,15 @@ ggplot(df) +
 
 ```
 
-Esto significa que por cada **estudiante matriculado**, hay **0.12 docentes** en la universidad.
 
-Similarmente, por cada **estudiante matriculado**, hay **0.09 administrativos** en la universidad.
+Esto significa que por cada **estudiante matriculado**, hay **0.12 docentes** en la universidad (*o ~8 estudiantes por cada docente*).
+
+Similarmente, por cada **estudiante matriculado**, hay **0.09 administrativos** en la universidad (*o ~11 estudiantes por cada administrativo*).
 
 
 ---
 
-## 2. Hablemos de salarios
+## **2. Hablemos de salarios**
 
 Una de las principales críticas hacia las universidades públicas consiste en el salario de sus funcionarios. La opinión pública prevalece que los salarios dentro de las universidades son excesivamente altos.
 
@@ -132,30 +131,46 @@ ggplot(funcionarios) +
   
 
 
-print(paste0("El salario promedio en la UCR es ₡",promedio))
-print(paste0("El salario más común en la UCR es ₡",moda ))
-print(paste0("Como referencia, el salario mínimo de un profesor asistente en la U de Buenos Aires es de ~ ₡337626"))
+
+```
+
+Este es el salario promedio en la UCR:
+
+```{r}
+print(paste0("₡",promedio))
+```
+
+Sin embargo, el salario más frecuente dentro de la UCR es este:
+
+```{r}
+print(paste0("₡",moda ))
+```
+
+Como referencia, comparémoslo con el salario mínimo que recibe un docente en la Universidad de Buenos Aires (https://aduba.org.ar/tabla-salarial/).:
+
+```{r}
+print(paste0("~ ₡337626"))
 ```
 
 
-Con ello, podemos ver una realidad más objetiva con los salarios asignados en la U. ¿Por qué el salario más común es tan bajo? Una gran parte de funcionarios de la UCR (approx. 1000) no están nombrados a tiempo completo. Veamos con más detalle cómo se distribuyen esas pagas dependiendo del puesto.
+Con ello, podemos ver una realidad más objetiva con los salarios asignados en la U. ¿Por qué el salario más frecuente es más bajo? Una gran parte de funcionarios de la UCR (approx. 1000) no están nombrados a tiempo completo. Veamos con más detalle cómo se distribuyen esas pagas dependiendo del puesto.
 
-Asimismo, se observa que el salario mínimo que se brinda en la UCR es significativamente más bajo comparada a universidades de la Región. Por ejemplo, la U de Chile posee un salario de entrada para profesores asistentes de ~ ₡501730 (https://aduba.org.ar/tabla-salarial/).
+Veamos cómo se distribuyen los salarios de cada funcionario dependiendo de su puesto:
 
 
 ```{r}
 #separación más específica por puesto
 
 for(i in 1:nrow(funcionarios)){
-  if(grepl('INTERINO',funcionarios$ï..PUESTO[i]) == TRUE){
+  if(grepl('INTERINO',funcionarios$PUESTO[i]) == TRUE){
     funcionarios$puesto[i] <- 'Docente interino'
-  } else if(grepl('ADJUNTO',funcionarios$ï..PUESTO[i]) == TRUE){
+  } else if(grepl('ADJUNTO',funcionarios$PUESTO[i]) == TRUE){
     funcionarios$puesto[i] <- 'Docente adjunto'
-  } else if(grepl('INSTRUCTOR',funcionarios$ï..PUESTO[i]) == TRUE){
+  } else if(grepl('INSTRUCTOR',funcionarios$PUESTO[i]) == TRUE){
     funcionarios$puesto[i] <- 'Docente instructor'
-  } else if(grepl('ASOCIADO',funcionarios$ï..PUESTO[i]) == TRUE){
+  } else if(grepl('ASOCIADO',funcionarios$PUESTO[i]) == TRUE){
     funcionarios$puesto[i] <- 'Docente asociado'
-  } else if(grepl('CATEDRATICO',funcionarios$ï..PUESTO[i]) == TRUE){
+  } else if(grepl('CATEDRATICO',funcionarios$PUESTO[i]) == TRUE){
     funcionarios$puesto[i] <- 'Docente catedrático'
   } else {funcionarios$puesto[i] <- 'Administrativo'}
 }
@@ -191,9 +206,9 @@ ggplot(funcionarios) +
         legend.position = 'bottom') + 
   labs(y = '', x = 'Cantidad') +
   scale_fill_manual('Puesto', values = c('#D55E00', '#0072B2', '#F0E442', '#009E73', '#CC79A7', '#56B4E9')) + 
-  annotate('text', x = 4900, y = 1, label = n_salarios[[1]], size = 4) + 
-  annotate('text', x = 3200, y = 2, label = n_salarios[[2]], size = 4) + 
-  annotate('text', x = 1350, y = 3, label = n_salarios[[3]], size = 4) + 
+  annotate('text', x = 5100, y = 1, label = n_salarios[[1]], size = 4) + 
+  annotate('text', x = 3300, y = 2, label = n_salarios[[2]], size = 4) + 
+  annotate('text', x = 1400, y = 3, label = n_salarios[[3]], size = 4) + 
   annotate('text', x = 600, y = 4, label = n_salarios[[4]], size = 4) + 
   annotate('text', x = 400, y = 5, label = n_salarios[[5]], size = 4)
 
@@ -201,9 +216,11 @@ ggplot(funcionarios) +
 
 ```
 
-## 3. ¿Cuánto del FEES es realmente esto?
+---
 
-En 2024, la UCR recibió ₡291317.11 millones de su corte del FEES (https://semanariouniversidad.com/universitarias/asi-quedo-distribuido-el-fees-de-2024/). Con esta información, vamos a hacer varios experimentos:
+## **3. ¿Cuánto del FEES es realmente esto?**
+
+En 2024, la UCR recibió ₡291317.11 millones de su corte del FEES (https://semanariouniversidad.com/universitarias/asi-quedo-distribuido-el-fees-de-2024/). Con esta información, vamos a analizar varios casos:
 
 - ¿Cuánto % del corte de la UCR consisten estos salarios anuales?
 - Vamos a despedir a todas las personas que ganen 4 millones o más. ¿Cuánto cambia ese porcentaje?
@@ -239,3 +256,5 @@ ggplot(pcts) +
 
 ```
 
+
+Y, en estos casos hipotéticos estamos asumiendo que se le está pagando a todo el personal interino durante los 12 meses del año (*lo cual no ocurre*).
