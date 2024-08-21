@@ -10,6 +10,7 @@ output:
 # **¿Cómo se usa el FEES en la UCR?**
 
 *Asociación de Estudiantes de Química*
+
 *Esteban Bertsch-Aguilar*
 
 ---
