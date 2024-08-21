@@ -158,7 +158,7 @@ print(paste0("Como referencia, el salario mínimo de un profesor asistente en la
 
 Con ello, podemos ver una realidad más objetiva con los salarios asignados en la U. ¿Por qué el salario más común es tan bajo? Una gran parte de funcionarios de la UCR (approx. 1000) no están nombrados a tiempo completo. Veamos con más detalle cómo se distribuyen esas pagas dependiendo del puesto.
 
-Asimismo, se observa que el salario mínimo que se brinda en la UCR es significativamente más bajo comparada a universidades de la Región. Por ejemplo, la U de Chile posee un salario de entrada para profesores asistentes de ~ ₡501730 (https://aduba.org.ar/tabla-salarial/).
+Asimismo, se observa que el salario mínimo que se brinda en la UCR es significativamente más bajo comparada a universidades de la Región. Por ejemplo, la U de Buenos Aires posee un salario de entrada para profesores asistentes de ~ ₡501730 (https://aduba.org.ar/tabla-salarial/).
 
 
 
